@@ -1,0 +1,74 @@
+#MIPS Programming Assignment Comp Org I Fall 2017
+#Victoria Velazquez
+
+
+.data #declare variables
+	str1: .space 9 #allocating space in memory
+	error_msg: .ascii "Invalid hexadecimal number."
+
+.text  #where code is being executed
+	la $a0, str1 													#making variable to store user input 
+	li $a1, 9 														#limits amount of characters
+	li $v0, 8														#loads syscall that reads user input for strings
+	syscall 
+	li $t1, 0														#sum of character count set to 0
+
+loop_for_character_count:
+	lb $t0, 0($a0) 													#loads a byte from the string array 
+	beq $t0, 0, exit 												#if char is null, exit
+	beq $t0, 10, exit 												#if char is newline, exit
+	addi $a0, $a0, 1 								#iterating through string array/increase to next byte
+	addi $t1, $t1, 1	#add to sum
+	j loop_for_character_count
+exit:
+	la $s0, str1
+
+loop_for_validity:
+	#ASCII: *<0<9<*<A<F<*<a<f*<*
+	#Decimal: *<48<57<*<65<70<*<97<102<*
+	lb $t0, 0($s0) 													#loads a byte from the string array 
+	beq $t0, 0, exit2 												#if char is null, exit
+	beq $t0, 10, exit2 												#if char is newline, exit
+	addi $s0, $s0, 1 								#iterating through string array/increase to next byte
+	blt $t0, 48, invalid 											#if char is less than 0
+	blt $t0, 58, is_number 											#if char is less than 9
+	blt $t0, 65, invalid 											#if char is less than A
+	blt $t0, 71, is_uppercase 										#if char is less than F
+	blt $t0, 97, invalid 											#if char is less than a
+	blt $t0, 103, is_lowercase 										#if char is less than f
+	bgt $t0, 102, invalid 											#if char is greater than f
+	j loop_for_validity
+exit2:
+	li $v0, 10 														#terminate execution
+	syscall
+
+invalid:
+	li $v0, 4														#calling function to print a string
+	la $a0, error_msg 												#print error msg
+	syscall 
+	li $v0, 10 														#terminate execution
+	syscall
+
+is_number:
+	addi $t0, $t0, -48  												#convert to hex
+	li $v0, 1														#calling function to print a integar
+	add $a0, $t0, $0
+	syscall
+	j loop_for_validity
+
+is_uppercase:
+	addi $t0, $t0, -55												#convert to hex
+	li $v0, 1 														#calling function to print a integar
+	add $a0, $t0, $0
+	syscall
+	j loop_for_validity
+
+is_lowercase:
+	addi $t0, $t0, -87 												#convert to hex
+	li $v0, 1 														#calling function to print a integar
+	add $a0, $t0, $0
+	syscall
+	j loop_for_validity
+
+	
+
