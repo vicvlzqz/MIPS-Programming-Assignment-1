@@ -61,6 +61,7 @@ exit2:
 	li $v0, 4														#calling function to print a string
 	la $a0, newline 												#print newline
 	syscall
+
 	bge $t1, 8, convert 											#changing two's complement
 	li $v0, 1 														#calling function to print a integar
 	add $a0, $s6, $0 												#printing sum
@@ -80,46 +81,18 @@ is_number:
 	addi $t0, $t0, -48  											#convert to decimal
 	sllv $t0, $t0, $s5 												#shifting
 	add $s6, $t0, $s6 												#adding to sum
-	li $v0, 1														#calling function to print a integar
-	add $a0, $t0, $0
-	syscall
-
-    li $v0, 4														#calling function to print a string
-	la $a0, newline													#print newline
-	syscall 
-
-	li $v0, 1 														#calling function to print a integar
-	add $a0, $s5, $0 												#printing sum
-	syscall
-	li $v0, 4														#calling function to print a string
-	la $a0, newline													#print newline
-	syscall 
 	j loop_for_validity
 
 is_uppercase:
 	addi $t0, $t0, -55												#convert to decimal
 	sllv $t0, $t0, $s5 												#shifting
 	add $s6, $t0, $s6 												#adding to sum
-	li $v0, 1 														#calling function to print a integar
-	add $a0, $t0, $0
-	syscall
-
-	li $v0, 4														#calling function to print a string
-	la $a0, newline													#print newline
-	syscall 
 	j loop_for_validity
 
 is_lowercase:
 	addi $t0, $t0, -87 												#convert to decimal
 	sllv $t0, $t0, $s5 												#shifting
 	add $s6, $t0, $s6 												#adding to sum
-	li $v0, 1 														#calling function to print a integar
-	add $a0, $t0, $0
-	syscall
-
-	li $v0, 4														#calling function to print a string
-	la $a0, newline													#print newline
-	syscall 
 	j loop_for_validity
 
 convert:
